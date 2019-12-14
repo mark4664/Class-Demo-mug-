@@ -3,7 +3,7 @@
 # Script name: mug_class_3.py
 
 # Mark Bradley
-# 12/12/19
+# 13/12/19
 
 # demo of a class object built to show the use of a commom tea mug
 # converted to a module
@@ -24,7 +24,7 @@ class mug:
         self.decoration=decoration
         self.state=state
         self.clean=clean
-        self.content='nothing'      # Mugs have no contentat the start
+        self.content='nothing'      # Mugs have no content at the start
         
     def fill(self,quantity,content='Tea'):
         # quantity is the amount to put in the mug. It cannot exceed the size!
@@ -41,10 +41,24 @@ class mug:
             
         self.clean = False
         
-    def __add__(self,quantity):   #Operator overload for '+'
-        return('Sorry you cannot topup that way!')
+    def __add__(self, othermug):   #Operator overload for '+'
+        '''Transfer the contents of 'othermug' to the current mug so long as they contain
+           the same thing. Only as much as will fit is transfered.
+        '''
+        if (self.content != othermug.content) and othermug.state > 0:
+            pass
+        else:
+            space=self.size-self.state      # Empty capacity in the mug
+            if space >= othermug.state:     # If the content of the other mug will fit
+                self.state =  self.state + othermug.state  # Put it all in the mug
+                othermug.state=0   #The othermug is now empty
+            else:                        # There is more in the other mug than will fit
+                self.state =  self.size  # so the mug is full
+                othermug.state = othermug.state - space # and subtract the amount transfered 
+                
         
     def empty(self):
+
         # Pour away the contents - state=0
         ''' empty the content of the mug
         '''
@@ -88,6 +102,7 @@ if __name__ == '__main__':
     print('Class mug test')
     #'Create an object of class mug - mymug, holds a maximun of 450ml and has a picture of a blue bird'
     mymug=mug(450,'Blue Bird')
+    petersmug = mug(350,"We're with Greta!")
     # Fill the mymug with 400ml of coffee
     mymug.fill(400,'Coffee')
     # Check mymug
@@ -98,7 +113,15 @@ if __name__ == '__main__':
     # Have a big sip
     mymug.sip(100)
     print(mymug.whatsleft())
+    
     mymug.sip(50)
-    # Have another sip
     print(mymug.whatsleft())
     
+    petersmug.fill(100,'Coffee')
+    print(petersmug.whatsleft())
+    
+    mymug + petersmug   # Calls the __add__ method - it does not do an addition
+
+    print(petersmug.whatsleft())
+    print(mymug.whatsleft())
+
