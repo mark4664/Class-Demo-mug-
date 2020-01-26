@@ -9,7 +9,7 @@
 # demo of a class object built to show the use of a commom tea mug
 # converted to a module
 
-class mug:
+class Mug:
     ''' Class to describe the common Mug.
         Size is capacity in ml.
         Decoration,colour picture etc.
@@ -17,7 +17,7 @@ class mug:
         Clean, True if the mug has not been used
         Content, whats in the mug'''
     
-    def __init__(self,size=350,decoration='',clean=True):
+    def __init__(self,size=350,decoration='Plain white',clean=True):
         # Initalize an instance of mug
         '''This builds the 'mug' using the default parameter unless new ones are supplied.
         '''
@@ -102,12 +102,51 @@ class mug:
         
         return('The ' + self.decoration + ' mug ' + state_s)
     
+#----------------------------------------------------------------------------
+    
+class ThermalMug(Mug):
+    ''' Class to allow temperature and thermal properties of a ThermalMug.
+        Sub class of Mug
+        Addition properties
+        Insulation degrees C lost over a given time, as coduction or as insulation?
+        Temperature on berverage on filling
+        May need as well
+        Time contents added
+        Ambient temperature
+        Return the current temperature
+        Quantity of content, does this change the rate of cooling?
+        '''
+    
+    def __init__(self,size=350,decoration='',clean=True,insulation=0):
+        '''This builds the 'thermal mug' using the default parameter unless new ones are supplied.
+        '''
+        # Pass common elements to 'Mug' class for initalisation
+        Mug.__init__(self,size,decoration,clean)
+        # How do you measure insulation or conductance in a thermal system? What are the units?
+        # Electrical resistance r=v/i  or  conductance G=i/v
+        self.insulation = insulation
+        
+    def fill(self,temperature,quantity,content='Tea'):
+        
+        self.temperature=temperature   # Temperature of the beverage
+        # Need to record the current time
+        Mug.fill(self,quantity,content)     # Use Mug.fill to do the rest!
+        
+    def current_t():
+        # Work out the temperature of the beverage...HOW????
+        # https://byjus.com/jee/newtons-law-of-cooling/
+        return('Current temperature is ????')
+        
+        
+        
+#------------------------------------------------------------------------------          
+    
 if __name__ == '__main__':
     
     print('Class mug test')
     #'Create an object of class mug - mymug, holds a maximun of 450ml and has a picture of a blue bird'
-    mymug=mug(450,'Blue Bird')
-    #petersmug = mug(350,"We're with Greta!")
+    mymug=Mug(450,'Blue Bird')
+    #petersmug = Mug(350,"We're with Greta!")
     # Fill the mymug with 400ml of coffee
     mymug.fill(400,'Coffee')
     # Check mymug
