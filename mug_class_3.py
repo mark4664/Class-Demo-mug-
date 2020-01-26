@@ -4,7 +4,7 @@
 
 # Mark Bradley
 # 13/12/19
-# Updated 26/01/20
+# Updated 26/01/20 - correction to 'fill' and 'empty' methods to prevent mixing content.
 
 # demo of a class object built to show the use of a commom tea mug
 # converted to a module
@@ -17,13 +17,13 @@ class mug:
         Clean, True if the mug has not been used
         Content, whats in the mug'''
     
-    def __init__(self,size=350,decoration='',state=0,clean=True):
+    def __init__(self,size=350,decoration='',clean=True):
         # Initalize an instance of mug
         '''This builds the 'mug' using the default parameter unless new ones are supplied.
         '''
         self.size=size
         self.decoration=decoration
-        self.state=state
+        self.state=0                # Mug has zero content
         self.clean=clean
         self.content='nothing'      # Mugs have no content at the start
         
@@ -31,14 +31,17 @@ class mug:
         # quantity is the amount to put in the mug. It cannot exceed the size!
         ''' fill adds a quantity in ml of the beverage specified in content to your mug
         '''
-        self.content=content
-        
-        if quantity > (self.size - self.state):
+        if self.content == 'nothing':    # Mug has no content so add anything
+            self.content = content
+        elif self.content != content:    # What your adding is not the same as the existing 
+            return('Oh dear, you tried to add ' + content + ' to ' + self.content)
+            
+        if quantity > (self.size - self.state):  # Will the content fit?
             self.state = self.size
             return('Oh dear some of that over flowed!')
             
         else:
-            self.state = quantity
+            self.state = quantity + self.state
             
         self.clean = False
         
@@ -63,6 +66,7 @@ class mug:
         # Pour away the contents - state=0
         ''' empty the content of the mug
         '''
+        self.content = 'nothing'
         self.state=0
         
     def sip(self,sip_size=30):
@@ -103,7 +107,7 @@ if __name__ == '__main__':
     print('Class mug test')
     #'Create an object of class mug - mymug, holds a maximun of 450ml and has a picture of a blue bird'
     mymug=mug(450,'Blue Bird')
-    petersmug = mug(350,"We're with Greta!")
+    #petersmug = mug(350,"We're with Greta!")
     # Fill the mymug with 400ml of coffee
     mymug.fill(400,'Coffee')
     # Check mymug
@@ -118,11 +122,11 @@ if __name__ == '__main__':
     mymug.sip(50)
     print(mymug.whatsleft())
     
-    petersmug.fill(100,'Coffee')
-    print(petersmug.whatsleft())
+    #petersmug.fill(100,'Coffee')
+    #print(petersmug.whatsleft())
     
-    mymug + petersmug   # Calls the __add__ method - it does not do an addition
+    #mymug + petersmug   # Calls the __add__ method - it does not do an addition
 
-    print(petersmug.whatsleft())
+    #print(petersmug.whatsleft())
     print(mymug.whatsleft())
 
