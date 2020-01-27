@@ -4,10 +4,15 @@
 
 # Mark Bradley
 # 13/12/19
-# Updated 26/01/20 - correction to 'fill' and 'empty' methods to prevent mixing content.
+# Updated 26/01/20 - correction to 'fill' and 'empty' methods to prevent
+# mixing content.
+# New sub class ThermalMug to monitor content temperature over time.
 
 # demo of a class object built to show the use of a commom tea mug
 # converted to a module
+
+import time
+import math
 
 class Mug:
     ''' Class to describe the common Mug.
@@ -108,34 +113,39 @@ class ThermalMug(Mug):
     ''' Class to allow temperature and thermal properties of a ThermalMug.
         Sub class of Mug
         Addition properties
-        Insulation degrees C lost over a given time, as coduction or as insulation?
-        Temperature on berverage on filling
-        May need as well
+        heatloss_k heat loss constant k
+        Temperature of berverage on filling
         Time contents added
         Ambient temperature
         Return the current temperature
-        Quantity of content, does this change the rate of cooling?
         '''
     
-    def __init__(self,size=350,decoration='',clean=True,insulation=0):
+    def __init__(self,size=350,decoration='',clean=True,heatloss_k=0.04):
         '''This builds the 'thermal mug' using the default parameter unless new ones are supplied.
         '''
         # Pass common elements to 'Mug' class for initalisation
         Mug.__init__(self,size,decoration,clean)
-        # How do you measure insulation or conductance in a thermal system? What are the units?
+        
+        # How do you measure heatloss_k or conductance in a thermal system? What are the units?
         # Electrical resistance r=v/i  or  conductance G=i/v
-        self.insulation = insulation
+        self.heatloss_k = heatloss_k  # Constant of heat loss
+        # 0 = Perfect insulation, the larger the number the greater the loss rate.
         
     def fill(self,temperature,quantity,content='Tea'):
         
         self.temperature=temperature   # Temperature of the beverage
-        # Need to record the current time
+        self.filltime=time.time()        # Note the time of fill
+        # Compensation for adding to existing content ?
         Mug.fill(self,quantity,content)     # Use Mug.fill to do the rest!
         
-    def current_t():
-        # Work out the temperature of the beverage...HOW????
+    def current_t(self,ambient_t=20):
+        
+        minsincefill=(time.time() - self.filltime)/60 # Minutes since fill time
+        expo=math.exp(-1 * self.heatloss_k * minsincefill)
+        current_t = ambient_t + (self.temperature - ambient_t) * expo
+        
         # https://byjus.com/jee/newtons-law-of-cooling/
-        return('Current temperature is ????')
+        return('Current temperature is: {0:.1f} '.format(current_t))
         
         
         
@@ -146,7 +156,6 @@ if __name__ == '__main__':
     print('Class mug test')
     #'Create an object of class mug - mymug, holds a maximun of 450ml and has a picture of a blue bird'
     mymug=Mug(450,'Blue Bird')
-    #petersmug = Mug(350,"We're with Greta!")
     # Fill the mymug with 400ml of coffee
     mymug.fill(400,'Coffee')
     # Check mymug
@@ -157,15 +166,5 @@ if __name__ == '__main__':
     # Have a big sip
     mymug.sip(100)
     print(mymug.whatsleft())
-    
     mymug.sip(50)
     print(mymug.whatsleft())
-    
-    #petersmug.fill(100,'Coffee')
-    #print(petersmug.whatsleft())
-    
-    #mymug + petersmug   # Calls the __add__ method - it does not do an addition
-
-    #print(petersmug.whatsleft())
-    print(mymug.whatsleft())
-
